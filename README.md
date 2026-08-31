@@ -35,7 +35,7 @@ python contact-manager-python.py
 
 ## 📈 Evolução do projeto
 
-Este repositório documenta minha evolução prática com Python, migrando da lógica de programação (veja [logica-de-programacao]([link-aqui](https://github.com/rjsouzadev/logica-de-programacao))) para uma linguagem de mercado — passando por estruturas de dados simples, arquivos `.txt`, até chegar em banco de dados relacional e boas práticas de organização de código.
+Este repositório documenta minha evolução prática com Python, migrando da lógica de programação (veja [logica-de-programacao](https://github.com/rjsouzadev/logica-de-programacao)) para uma linguagem de mercado — passando por estruturas de dados simples, arquivos `.txt`, até chegar em banco de dados relacional e boas práticas de organização de código.
 
 ## 💡 Aprendizados
 
