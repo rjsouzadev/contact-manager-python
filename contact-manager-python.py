@@ -168,8 +168,8 @@ def busca_de_contato(agenda):
         os.system('cls')
         print ("[BUSCA DE CONTATOS]")
         print ("")
-        print ("[1] Busca pro nome.")
-        print ("[2] Busca pro inicial")
+        print ("[1] Busca por nome.")
+        print ("[2] Busca por inicial.")
         print ("[0] Sair")
         op2 = input ("[ESCOLHA AS OPÇÕES CORRESPONDENTES]:")
 
