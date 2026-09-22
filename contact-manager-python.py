@@ -4,10 +4,7 @@ import os
 conexao = sqlite3.connect("contatos.db")
 cursor = conexao.cursor()
 
-try:
-    cursor.execute("CREATE TABLE contatos (telefone TEXT, nome TEXT)")
-except sqlite3.OperationalError:
-    pass
+cursor.execute("CREATE TABLE IF NOT EXISTS contatos (telefone TEXT, nome TEXT)")
 
 agenda = []
 
@@ -59,7 +56,7 @@ def adicionar_contato(cursor, agenda, conexao):
                 elif resp.upper() != "S" and resp.upper() != "N":
                     os.system('cls')
                     print ("")
-                    print ("[ERROR]: Escolha a as opções correspondentes!")
+                    print ("[ERROR]: Escolha as opções correspondentes!")
                     print ("")
 
 def agenda_Decontatos(agenda):
@@ -439,7 +436,7 @@ while op != "0":
         case _:
             if op != "0":
                 os.system('cls')
-                print ("[ERROR]: Escolha a as opções correspondentes!")
+                print ("[ERROR]: Escolha as opções correspondentes!")
                 print ("")
             else:
                 os.system('cls')
