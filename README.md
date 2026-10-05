@@ -8,7 +8,7 @@ Projeto evoluído a partir de uma versão inicial simples (dicionário + arquivo
 
 ## 📋 Funcionalidades
 
-- **Adicionar contato** — validação de duplicata e formato de telefone (11 dígitos)
+- **Adicionar contato** — validação de duplicata (telefone e e-mail), formato de telefone (11 dígitos) e formato de e-mail via regex
 - **Ver agenda completa** — listagem de todos os contatos cadastrados
 - **Remover contato** — seleção por número na lista, com dupla confirmação antes de excluir
 - **Buscar contato** — por nome completo ou por letra inicial
@@ -21,6 +21,7 @@ Projeto evoluído a partir de uma versão inicial simples (dicionário + arquivo
 - **Python 3.14**
 - **POO (Programação Orientada a Objetos)** — classe `Contato` representando cada registro
 - **SQLite** — persistência de dados via `sqlite3`, com queries parametrizadas (proteção contra SQL Injection)
+- **Regex (`re`)** — validação do formato de e-mail com `re.fullmatch`
 - **Modularização** — cada operação do menu isolada em sua própria função
 - **match/case** — controle de fluxo do menu principal
 - **Git** — versionamento com histórico de commits organizado
@@ -43,11 +44,11 @@ Este repositório documenta minha evolução prática com Python, migrando da l�
 - Uso de `return` para controlar fluxo de execução, eliminando flags booleanas desnecessárias
 - Escopo de variáveis e organização de código em funções reutilizáveis
 - Prevenção de SQL Injection com queries parametrizadas
+- Validação de dados de entrada com expressões regulares (`re.fullmatch` devolve um objeto ou `None`)
 - Fluxo básico de Git: `init`, `add`, `commit`, `remote`, `push`
 
 ## 🔜 Próximos passos
 
-- Consumo de API para chatbot integrado
 - Testes automatizados
 - Interface gráfica ou web (avaliação futura)
 
