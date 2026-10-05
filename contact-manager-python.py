@@ -1,25 +1,29 @@
 import sqlite3
 import os
+import re
 
 conexao = sqlite3.connect("contatos.db")
 cursor = conexao.cursor()
 
-cursor.execute("CREATE TABLE IF NOT EXISTS contatos (telefone TEXT, nome TEXT)")
+cursor.execute("CREATE TABLE IF NOT EXISTS contatos (nome TEXT, telefone TEXT, email TEXT)")
 
 agenda = []
 
 class Contato:
-    def __init__(self, nome, telefone):
+    def __init__(self, nome, telefone, email):
         self.nome = nome
         self.telefone = telefone
+        self.email = email
 
 cursor.execute("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")
 contatos = cursor.fetchall()
 for i in range(0, len(contatos)):
-    contato = Contato(contatos[i][1], contatos[i][0])
+    contato = Contato(contatos[i][0], contatos[i][1], contatos[i][2])
     agenda.append(contato)
 
 def adicionar_contato(cursor, agenda, conexao):
+
+    padrao = r"[a-zA-Z0-9]+(\.)?(_)?([a-zA-Z0-9]+)?@[a-zA-Z0-9]+\.com(\.br)?"
 
     os.system('cls')
     while True:
@@ -27,23 +31,38 @@ def adicionar_contato(cursor, agenda, conexao):
         print ("")
         nome = input("[CONTATO]:")
         telefone = input("[TELEFONE]:")
+        email = input("[EMAIL]:")
         dup = False
+        dupEmail = False
         for i in range(0, len(agenda)):
             if telefone == agenda[i].telefone:
                 dup = True
+            if email == agenda[i].email:
+                dupEmail = True
                 break
-        if dup == True or len(telefone) != 11 or not telefone.isdigit():
-            os.system('cls')
-            print("[ERROR]: Número de telefone já foi cadastrado ou é inválido! Tente Novamente.")
+        os.system('cls')
+        if re.fullmatch(padrao , email) == None:
+            print ("[ERROR]: Email inválido!")
+        if dupEmail == True:
+            print ("[ERROR]: O email [" + email + "] já foi cadastrado. Tente Novamente!")
+        if dup == True:
+            print("[ERROR]: Número de telefone já foi cadastrado! Tente Novamente.")
             print ("")
-        elif dup == False and telefone.isdigit() and len(telefone) == 11:
-            contato = Contato(nome, telefone)
+        if len(telefone) != 11:
+            print("[ERROR]: Este número de telefone tem menos de 11 dígitos!")
+            print ("")
+        if not telefone.isdigit():
+            print ("[ERROR]: Use apenas números para digitar o telefone!")
+            print ("")
+        elif dup == False and telefone.isdigit() and len(telefone) == 11 and dupEmail == False and re.fullmatch(padrao , email) != None:
+            contato = Contato(nome, telefone, email)
             agenda.append(contato)
-            cursor.execute("INSERT INTO contatos (telefone, nome) VALUES (?, ?)", (telefone, nome))
+            cursor.execute("INSERT INTO contatos (nome, telefone, email) VALUES (?, ?, ?)", (nome, telefone, email))
             conexao.commit()
             while True:
                 print ("")
                 print ("[CONTATO]:", nome, "[TELEFONE]:", telefone + ".")
+                print ("[EMAIL]:", email)
                 print ("[CADASTRO DE CONTATO REALIZADO COM SUCESSO!]")
                 print ("")
                 resp = input ("Deseja continuar? [S/N]")
@@ -389,6 +408,7 @@ def edicao_contato(agenda, cursor, conexao):
 op = 999
 while op != "0":
 
+    os.system('cls')
     print ("[MENU]")
     print ("")
     print ("[1] Adicionar contato.")
@@ -404,7 +424,7 @@ while op != "0":
     match op:
 
         case "1":
-    
+
             adicionar_contato(cursor, agenda, conexao)
   
         case "2":
