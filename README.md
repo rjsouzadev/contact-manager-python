@@ -49,7 +49,6 @@ Este repositório documenta minha evolução prática com Python, migrando da l�
 
 ## 🔜 Próximos passos
 
-- Consumo de API para chatbot integrado
 - Testes automatizados
 - Interface gráfica ou web (avaliação futura)
 
