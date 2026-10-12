@@ -21,9 +21,9 @@ for i in range(0, len(contatos)):
     contato = Contato(contatos[i][0], contatos[i][1], contatos[i][2])
     agenda.append(contato)
 
-def adicionar_contato(cursor, agenda, conexao):
-
     padrao = r"[a-zA-Z0-9]+(\.)?(_)?([a-zA-Z0-9]+)?@[a-zA-Z0-9]+\.com(\.br)?"
+
+def adicionar_contato(cursor, agenda, conexao, padrao):
 
     os.system('cls')
     while True:
@@ -349,61 +349,329 @@ def ordenacao_alfabetica(agenda):
         elif resp.upper() != "N" and resp.upper() != "S":
             os.system('cls')
 
-def edicao_contato(agenda, cursor, conexao):
+def edicao_contato(cursor, conexao, padrao):
 
     os.system('cls')
     while True:
         print("[EDIÇÃO DE CONTATOS]:")
-        print("")
-        print("[CONTATOS CADASTRADOS]:")
-        print("")
-        for i in range(0, len(agenda)):
-            print("[NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
-        print("")
-        resp = input("Deseja editar algum contato existente? [S/N]")
-        if resp.upper() == "N":
-            os.system('cls')
-            return
-        elif resp.upper() == "S":
-            print ("")
-            print ("[EDIÇÃO DE CONTATO]")
-            encontrarNome = input("[NOME DO CONTATO]:")
-            contatoencontrado = False
-            for i in range(0, len(agenda)):
-                if encontrarNome.upper() == agenda[i].nome.upper():
-                    contatoencontrado = True
-                    while True:
-                        print ("")
-                        print ("[CONTATO]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
-                        resp = input("Deseja realmente alterar o nome de contato? [S/N]")
-                        if resp.upper() == "N":
-                            os.system('cls')
-                            return
-                        elif resp.upper() == "S":
-                            print ("")
-                            editarNome = input ("[NOVO NOME]:")
-                            agenda[i].nome = editarNome
-                            cursor.execute("UPDATE contatos SET nome = ? WHERE telefone = ?", (editarNome, agenda[i].telefone))
-                            conexao.commit()
-                            os.system('cls')
-                            break
-                        elif resp.upper() != "N" and resp.upper() != "S":
-                            os.system('cls')
-            if contatoencontrado == False:
-                print ("")
+        print ("")
+        print ("[1] Edição de nome.")
+        print ("[2] Edição de telefone.")
+        print ("[3] Edição de e-mail.")
+        print ("[0] Sair")
+        op = input("Escolha a opção correspondente:")
+
+        match op:
+
+            case "1":
+    
+                agenda = []
+                cursor.execute("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")
+                conversor = cursor.fetchall()
+                for i in range(0, len(contatos)):
+                    contato = Contato(conversor[i][0], conversor[i][1], conversor[i][2])
+                    agenda.append(contato)
+                os.system('cls')
                 while True:
-                    print ("[ERROR]: CONTATO NÃO ENCONTRADO!")
-                    resp = input("Deseja continuar editando? [S/N]")
+                    print("[EDIÇÃO DE NOME]:")
+                    print("")
+                    print("[CONTATOS CADASTRADOS]:")
+                    print("")
+                    for i in range(0, len(agenda)):
+                        print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                        print ("· [EMAIL]:", agenda[i].email)
+                        print ("")
+                    resp = input("Deseja editar de algum contato existente? [S/N]")
                     if resp.upper() == "N":
                         os.system('cls')
                         return
                     elif resp.upper() == "S":
-                        os.system('cls')
-                        break
+                        while True:
+                            print ("")
+                            print ("[EDIÇÃO DE NOME]")
+                            encontrarNome = input("[Número de contato correspondente]:")
+                            if not encontrarNome.isdigit():
+                                os.system('cls')
+                                print ("[ERROR]: Digite apenas números!")
+                                print ("")
+                                for i in range(0, len(agenda)):
+                                    print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                                    print ("· [EMAIL]:", agenda[i].email)
+                                    print ("")
+                            try:
+                                if int(encontrarNome) > len(agenda):
+                                    os.system('cls')
+                                    print ("[ERROR]: O número digitado é invalido. Tente Novamente!")
+                                    print ("")
+                                    for i in range(0, len(agenda)):
+                                        print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                                        print ("· [EMAIL]:", agenda[i].email)
+                                        print ("")
+                            except:
+                                pass
+                            if encontrarNome.isdigit() and 1 <= int(encontrarNome) <= len(agenda):
+                                indice = encontrarNome
+                                indice = int(indice) - 1
+                                contato = agenda[indice].nome
+                                telefone = agenda[indice].telefone
+                                email = agenda[indice].email
+                                break
+                        while True:
+                                print ("")
+                                print ("[CONTATO]:", contato, "[TELEFONE]:", telefone + ".")
+                                print ("[EMAIL]:", email)
+                                print ("")
+                                resp = input("Deseja realmente alterar o nome desse contato? [S/N]")
+                                if resp.upper() == "N":
+                                    os.system('cls')
+                                    return
+                                elif resp.upper() == "S":
+                                    print ("")
+                                    while True:
+                                        editarNome = input ("[NOVO NOME]:")
+                                        print ("")
+                                        cursor.execute("UPDATE contatos SET nome = ? WHERE telefone = ?", (editarNome, agenda[indice].telefone))
+                                        conexao.commit()
+                                        print("[NOME ALTERADO]")
+                                        print("")
+                                        while True:
+                                            resp = input("Deseja voltar ao menu? [S/N]")
+                                            if resp.upper() == "S":
+                                                os.system('cls')
+                                                return
+                                            elif resp.upper() == "N":
+                                                os.system('cls')
+                                                print ("[DESCONECTADO]")
+                                                return True
+                                            elif resp.upper() != "N" and resp.upper() != "S":
+                                                os.system('cls')
+                                            
+                                elif resp.upper() != "N" and resp.upper() != "S":
+                                    os.system('cls')
                     elif resp.upper() != "N" and resp.upper() != "S":
+                        os.system('cls')  
+
+            case "2":
+
+                agenda = []
+                cursor.execute("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")
+                conversor = cursor.fetchall()
+                for i in range(0, len(contatos)):
+                    contato = Contato(conversor[i][0], conversor[i][1], conversor[i][2])
+                    agenda.append(contato)
+                os.system('cls')
+                while True:
+                    print("[EDIÇÃO DE TELEFONE]:")
+                    print("")
+                    print("[CONTATOS CADASTRADOS]:")
+                    print("")
+                    for i in range(0, len(agenda)):
+                        print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                        print ("· [EMAIL]:", agenda[i].email)
+                        print ("")
+                    resp = input("Deseja editar de algum contato existente? [S/N]")
+                    if resp.upper() == "N":
                         os.system('cls')
-        elif resp.upper() != "N" and resp.upper() != "S":
-            os.system('cls')
+                        return
+                    elif resp.upper() == "S":
+                        while True:
+                            print ("")
+                            print ("[EDIÇÃO DE TELEFONE]")
+                            encontrarTelefone = input("[Número de contato correspondente]:")
+                            if not encontrarTelefone.isdigit():
+                                os.system('cls')
+                                print ("[ERROR]: Digite apenas números!")
+                                print ("")
+                                for i in range(0, len(agenda)):
+                                    print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                                    print ("· [EMAIL]:", agenda[i].email)
+                                    print ("")
+                            try:
+                                if int(encontrarTelefone) > len(agenda):
+                                    os.system('cls')
+                                    print ("[ERROR]: O número digitado é invalido. Tente Novamente!")
+                                    print ("")
+                                    for i in range(0, len(agenda)):
+                                        print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                                        print ("· [EMAIL]:", agenda[i].email)
+                                        print ("")
+                            except:
+                                pass
+                            if encontrarTelefone.isdigit() and 1 <= int(encontrarTelefone) <= len(agenda):
+                                indice = encontrarTelefone
+                                indice = int(indice) - 1
+                                contato = agenda[indice].nome
+                                telefone = agenda[indice].telefone
+                                email = agenda[indice].email
+                                break
+                        while True:
+                                print ("")
+                                print ("[CONTATO]:", contato, "[TELEFONE]:", telefone + ".")
+                                print ("[EMAIL]:", email)
+                                print ("")
+                                resp = input("Deseja realmente alterar o nome desse contato? [S/N]")
+                                if resp.upper() == "N":
+                                    os.system('cls')
+                                    return
+                                elif resp.upper() == "S":
+                                    print ("")
+                                    while True:
+                                        editarTelefone = input ("[NOVO TELEFONE]:")
+                                        print ("")
+                                        dup = False
+                                        for i in range(0, len(agenda)):
+                                            if editarTelefone == agenda[i].telefone:
+                                                dup = True
+                                        if dup == True:
+                                            print("[ERROR]: Número de telefone já foi cadastrado! Tente Novamente.")
+                                            print ("")
+                                        if len(editarTelefone) < 11:
+                                            print("[ERROR]: Este número de telefone tem menos de 11 dígitos!")
+                                            print ("")
+                                        if len(editarTelefone) > 11:
+                                            print("[ERROR]: Este número de telefone tem mais de 11 dígitos!")
+                                            print ("")
+                                        if not editarTelefone.isdigit():
+                                            print ("[ERROR]: Use apenas números para digitar o telefone!")
+                                            print ("")
+                                        if editarTelefone.isdigit() and len(editarTelefone) == 11 and dup == False:
+                                            print ("")
+                                            cursor.execute("UPDATE contatos SET telefone = ? WHERE email = ?", (editarTelefone, agenda[indice].email))
+                                            conexao.commit()
+                                            print("[TELEFONE ALTERADO]")
+                                            print("")
+                                            while True:
+                                                resp = input("Deseja voltar ao menu? [S/N]")
+                                                if resp.upper() == "S":
+                                                    os.system('cls')
+                                                    return
+                                                elif resp.upper() == "N":
+                                                    os.system('cls')
+                                                    print ("[DESCONECTADO]")
+                                                    return True
+                                                elif resp.upper() != "N" and resp.upper() != "S":
+                                                    os.system('cls')
+                                            
+                                elif resp.upper() != "N" and resp.upper() != "S":
+                                    os.system('cls')
+                    elif resp.upper() != "N" and resp.upper() != "S":
+                        os.system('cls')  
+
+            case "3":
+
+                agenda = []
+                cursor.execute("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")
+                conversor = cursor.fetchall()
+                for i in range(0, len(contatos)):
+                    contato = Contato(conversor[i][0], conversor[i][1], conversor[i][2])
+                    agenda.append(contato)
+                os.system('cls')
+                while True:
+                    print("[EDIÇÃO DE EMAIL]:")
+                    print("")
+                    print("[CONTATOS CADASTRADOS]:")
+                    print("")
+                    for i in range(0, len(agenda)):
+                        print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                        print ("· [EMAIL]:", agenda[i].email)
+                        print ("")
+                    resp = input("Deseja editar o email de algum email existente? [S/N]")
+                    if resp.upper() == "N":
+                        os.system('cls')
+                        return
+                    elif resp.upper() == "S":
+                        while True:
+                            print ("")
+                            print ("[EDIÇÃO DE EMAIL]")
+                            encontrarEmail = input("[Número de contato correspondente]:")
+                            if not encontrarEmail.isdigit():
+                                os.system('cls')
+                                print ("[ERROR]: Digite apenas números!")
+                                print ("")
+                                for i in range(0, len(agenda)):
+                                    print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                                    print ("· [EMAIL]:", agenda[i].email)
+                                    print ("")
+                            try:
+                                if int(encontrarEmail) > len(agenda):
+                                    os.system('cls')
+                                    print ("[ERROR]: O número digitado é invalido. Tente Novamente!")
+                                    print ("")
+                                    for i in range(0, len(agenda)):
+                                        print(str(i + 1) + "º [NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
+                                        print ("· [EMAIL]:", agenda[i].email)
+                                        print ("")
+                            except:
+                                pass
+                            if encontrarEmail.isdigit() and 1 <= int(encontrarEmail) <= len(agenda):
+                                indice = encontrarEmail
+                                indice = int(indice) - 1
+                                contato = agenda[indice].nome
+                                telefone = agenda[indice].telefone
+                                email = agenda[indice].email
+                                break
+                        while True:
+                                print ("")
+                                print ("[CONTATO]:", contato, "[TELEFONE]:", telefone + ".")
+                                print ("[EMAIL]:", email)
+                                print ("")
+                                resp = input("Deseja realmente alterar o email desse contato? [S/N]")
+                                if resp.upper() == "N":
+                                    os.system('cls')
+                                    return
+                                elif resp.upper() == "S":
+                                    print ("")
+                                    while True:
+                                        dupEmail = False
+                                        editarEmail = input ("[NOVO EMAIL]:")
+                                        for i in range(0, len(agenda)):
+                                            if editarEmail == agenda[i].email:
+                                                dupEmail = True
+                                                break
+                                        if dupEmail == True:
+                                            os.system('cls')
+                                            print ("[ERROR]: O email [ " + editarEmail + " ] já foi cadastrado. Tente Novamente!")
+                                            print ("")
+                                        if re.fullmatch(padrao , editarEmail) == None:
+                                            os.system("cls")
+                                            print ("[ERROR]: Email inválido!")
+                                            print ("")
+                                            print ("""Como escrever o e-mail
+                                            
+O e-mail precisa seguir este formato.
+                                            
+1. Começa com letras ou números.
+2. Pode ter um ponto ou um underscore no meio, mas só um de cada.
+3. Depois vem o @.
+4. Em seguida o nome do site, com letras ou números.
+5. Termina em .com ou .com.br.
+                                            
+Exemplos aceitos: rogerio@gmail.com, joao.silva@gmail.com, maria_souza@empresa.com.br
+                                            
+Exemplos recusados: rogerio@@gmail.com, rogerio@gmail.org""")
+                                            print ("")
+                                        if dupEmail == False and re.fullmatch(padrao , editarEmail) != None:
+                                            cursor.execute("UPDATE contatos SET email = ? WHERE telefone = ?", (editarEmail, agenda[indice].telefone))
+                                            conexao.commit()
+                                            print ("")
+                                            print("[EMAIL ALTERADO]")
+                                            print("")
+                                            while True:
+                                                resp = input("Deseja voltar ao menu? [S/N]")
+                                                if resp.upper() == "S":
+                                                    os.system('cls')
+                                                    return
+                                                elif resp.upper() == "N":
+                                                    os.system('cls')
+                                                    print ("[DESCONECTADO]")
+                                                    return True
+                                                elif resp.upper() != "N" and resp.upper() != "S":
+                                                    os.system('cls')
+                                            
+                                elif resp.upper() != "N" and resp.upper() != "S":
+                                    os.system('cls')
+                    elif resp.upper() != "N" and resp.upper() != "S":
+                        os.system('cls')               
 
 op = 999
 while op != "0":
@@ -425,7 +693,7 @@ while op != "0":
 
         case "1":
 
-            adicionar_contato(cursor, agenda, conexao)
+            adicionar_contato(cursor, agenda, conexao, padrao)
   
         case "2":
 
@@ -451,7 +719,9 @@ while op != "0":
 
         case "6":
 
-            edicao_contato(agenda, cursor, conexao)
+            desconectar = edicao_contato(cursor, conexao, padrao)
+            if desconectar == True:
+                op = "0"
 
         case _:
             if op != "0":
