@@ -21,7 +21,16 @@ for i in range(0, len(contatos)):
     contato = Contato(contatos[i][0], contatos[i][1], contatos[i][2])
     agenda.append(contato)
 
-    padrao = r"[a-zA-Z0-9]+(\.)?(_)?([a-zA-Z0-9]+)?@[a-zA-Z0-9]+\.com(\.br)?"
+padrao = r"[a-zA-Z0-9]+(\.)?(_)?([a-zA-Z0-9]+)?@[a-zA-Z0-9]+\.com(\.br)?"
+
+def atualizar_agenda(cursor):
+    
+    agenda.clear()
+    cursor.execute("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")
+    contatos = cursor.fetchall()
+    for i in range(0, len(contatos)):
+        contato = Contato(contatos[i][0], contatos[i][1], contatos[i][2])
+        agenda.append(contato)
 
 def adicionar_contato(cursor, agenda, conexao, padrao):
 
@@ -349,7 +358,7 @@ def ordenacao_alfabetica(agenda):
         elif resp.upper() != "N" and resp.upper() != "S":
             os.system('cls')
 
-def edicao_contato(cursor, conexao, padrao):
+def edicao_contato(cursor, conexao, padrao, agenda):
 
     os.system('cls')
     while True:
@@ -364,13 +373,7 @@ def edicao_contato(cursor, conexao, padrao):
         match op:
 
             case "1":
-    
-                agenda = []
-                cursor.execute("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")
-                conversor = cursor.fetchall()
-                for i in range(0, len(contatos)):
-                    contato = Contato(conversor[i][0], conversor[i][1], conversor[i][2])
-                    agenda.append(contato)
+                
                 os.system('cls')
                 while True:
                     print("[EDIÇÃO DE NOME]:")
@@ -453,12 +456,6 @@ def edicao_contato(cursor, conexao, padrao):
 
             case "2":
 
-                agenda = []
-                cursor.execute("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")
-                conversor = cursor.fetchall()
-                for i in range(0, len(contatos)):
-                    contato = Contato(conversor[i][0], conversor[i][1], conversor[i][2])
-                    agenda.append(contato)
                 os.system('cls')
                 while True:
                     print("[EDIÇÃO DE TELEFONE]:")
@@ -559,12 +556,6 @@ def edicao_contato(cursor, conexao, padrao):
 
             case "3":
 
-                agenda = []
-                cursor.execute("SELECT * FROM contatos ORDER BY nome COLLATE NOCASE")
-                conversor = cursor.fetchall()
-                for i in range(0, len(contatos)):
-                    contato = Contato(conversor[i][0], conversor[i][1], conversor[i][2])
-                    agenda.append(contato)
                 os.system('cls')
                 while True:
                     print("[EDIÇÃO DE EMAIL]:")
@@ -676,6 +667,7 @@ Exemplos recusados: rogerio@@gmail.com, rogerio@gmail.org""")
 op = 999
 while op != "0":
 
+    atualizar_agenda(cursor)
     os.system('cls')
     print ("[MENU]")
     print ("")
@@ -719,7 +711,7 @@ while op != "0":
 
         case "6":
 
-            desconectar = edicao_contato(cursor, conexao, padrao)
+            desconectar = edicao_contato(cursor, conexao, padrao, agenda)
             if desconectar == True:
                 op = "0"
 
