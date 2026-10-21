@@ -11,8 +11,8 @@ Projeto evoluído a partir de uma versão inicial simples (dicionário + arquivo
 - **Adicionar contato** — validação de duplicata (telefone e e-mail), formato de telefone (11 dígitos) e formato de e-mail via regex
 - **Ver agenda completa** — listagem de todos os contatos cadastrados
 - **Remover contato** — seleção por número na lista, com dupla confirmação antes de excluir
-- **Buscar contato** — por nome completo ou por letra inicial
-- **Editar contato** — alteração de nome com persistência imediata no banco
+- **Buscar contato** — por nome completo, por letra inicial ou por parte do e-mail
+- **Editar contato** — alteração de nome, telefone ou e-mail, com as mesmas validações do cadastro e persistência imediata no banco
 - **Ordenação alfabética** — reorganiza a agenda por ordem de nome
 - **Sair** — encerra o programa e fecha a conexão com o banco
 
@@ -23,7 +23,7 @@ Projeto evoluído a partir de uma versão inicial simples (dicionário + arquivo
 - **SQLite** — persistência de dados via `sqlite3`, com queries parametrizadas (proteção contra SQL Injection)
 - **Regex (`re`)** — validação do formato de e-mail com `re.fullmatch`
 - **Modularização** — cada operação do menu isolada em sua própria função
-- **match/case** — controle de fluxo do menu principal
+- **match/case** — controle de fluxo do menu principal e dos submenus
 - **Git** — versionamento com histórico de commits organizado
 
 ## 🚀 Como executar
@@ -33,6 +33,8 @@ git clone https://github.com/rjsouzadev/contact-manager-python
 cd contact-manager-python
 python contact-manager-python.py
 ```
+
+O banco `contatos.db` é criado automaticamente na primeira execução.
 
 ## 📈 Evolução do projeto
 
@@ -45,10 +47,13 @@ Este repositório documenta minha evolução prática com Python, migrando da l�
 - Escopo de variáveis e organização de código em funções reutilizáveis
 - Prevenção de SQL Injection com queries parametrizadas
 - Validação de dados de entrada com expressões regulares (`re.fullmatch` devolve um objeto ou `None`)
+- Manter a lista em memória sincronizada com o banco, recarregando os dados com `clear()` a cada volta do menu
 - Fluxo básico de Git: `init`, `add`, `commit`, `remote`, `push`
 
 ## 🔜 Próximos passos
 
+- Aceitar e-mails com mais de um ponto antes do `@`
+- Mostrar o e-mail também na listagem completa e na remoção
 - Testes automatizados
 - Interface gráfica ou web (avaliação futura)
 

@@ -97,7 +97,8 @@ def agenda_Decontatos(agenda):
         print("")
         for i in range(0, len(agenda)):
             print("[NOME]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
-        print("")
+            print ("· [EMAIL]:", agenda[i].email)
+            print("")
         resp = input("Deseja voltar ao menu? [S/N]")
         if resp.upper() == "N":
             os.system('cls')
@@ -118,7 +119,8 @@ def remover_contato(agenda, cursor, conexao):
             print("")
             for i in range(0, len(agenda)):
                 print("[" + str(i + 1) + "º] [CONTATO]:", agenda[i].nome, "[TELEFONE]:", agenda[i].telefone + ".")
-            print ("")
+                print ("· [EMAIL]:", agenda[i].email)
+                print ("")
             print("[REMOÇÃO DE CONTATO]")
             print ("")
             resp = input ("Deseja remover um contato? [S/N]")
@@ -135,6 +137,7 @@ def remover_contato(agenda, cursor, conexao):
                     indice = int(remove) - 1
                     nome = agenda[indice].nome
                     telefone = agenda[indice].telefone
+                    email = agenda[indice].email
                     print("")
                     while True:
                         resp = input ("Tem certeza que deseja apagar este contato? Esta ação não pode ser desfeita. [S/N]")
@@ -144,7 +147,7 @@ def remover_contato(agenda, cursor, conexao):
                         elif resp.upper() == "S":
                             print("")
                             while True:
-                                resp = input("[REMOVER CONTATO]: [" + nome + "] TELEFONE: [" + telefone + "] ? [S/N]")
+                                resp = input("[REMOVER CONTATO]: [" + nome + "] TELEFONE: [" + telefone + "] EMAIL: ["+ email +"] ? [S/N]")
                                 if resp.upper() == "N":
                                     os.system('cls')
                                     return
@@ -195,6 +198,7 @@ def busca_de_contato(agenda):
         print ("")
         print ("[1] Busca por nome.")
         print ("[2] Busca por inicial.")
+        print ("[3] Busca por email.")
         print ("[0] Sair")
         op2 = input ("[ESCOLHA AS OPÇÕES CORRESPONDENTES]:")
 
@@ -211,12 +215,14 @@ def busca_de_contato(agenda):
                     encontrarNome = input("[NOME]:")
                     nomeEncontado = []
                     telefoneEncontado = []
+                    emailEncontrado = []
                     contatoInexistente = True
                     for i in range(0, len(agenda)):
                         if encontrarNome.upper() == agenda[i].nome.upper():
                             contatoInexistente = False
                             nomeEncontado.append(agenda[i].nome)
                             telefoneEncontado.append(agenda[i].telefone)
+                            emailEncontrado.append(agenda[i].email)
                     if contatoInexistente == False:
                         while True:
                             print("")
@@ -226,6 +232,7 @@ def busca_de_contato(agenda):
                             for i in range(0, len(nomeEncontado)):
                                 print ("[NOME DE CONTATO]:", nomeEncontado[i] + ".")
                                 print ("[TELEFONE]: (" + telefoneEncontado[i] + ")")
+                                print ("[E-MAIL]: (" + emailEncontrado[i] + ")")
                                 print("")
                             resp = input("Deseja continuar? [S/N]")
                             if resp.upper() == "N":
@@ -261,6 +268,7 @@ def busca_de_contato(agenda):
                     print ("")
                     contatos = []
                     telefones = []
+                    emails = []
                     verificao = False
                     if len(buscaInicial) == 1:
                         for i in range(0, len(agenda)):
@@ -268,6 +276,7 @@ def busca_de_contato(agenda):
                                 verificao = True
                                 contatos.append(agenda[i].nome)
                                 telefones.append(agenda[i].telefone)
+                                emails.append(agenda[i].email)
                         if verificao == True:
                             while True:
                                 print ("[CONTATO(s) ENCONTRADO(s)]: (" + str(len(contatos)) + ")")
@@ -275,6 +284,7 @@ def busca_de_contato(agenda):
                                 print ("")
                                 for i in range(0, len(contatos)):
                                     print ("[NOME DE CONTATO]:", contatos[i], "[TELEFONE]: (" + telefones[i] + ")")
+                                    print ("[E-MAIL]: (" + emails[i] + ")")
                                     print ("")
                                 resp = input("Deseja continuar? [S/N]")
                                 if resp.upper() == "N":
@@ -296,9 +306,9 @@ def busca_de_contato(agenda):
                                     break
                                 elif resp.upper() != "N" and resp.upper() != "S":
                                     os.system('cls')
-                    else:
+                    if len(buscaInicial) > 1 and buscaInicial.isalpha():   
                         while True:
-                            print ("[WARN]: Digite apenas letras para achar os contatos correspondentes!")
+                            print ("[WARN]: Digite apenas uma letra para achar os contatos correspondentes!")
                             print ("")
                             resp = input("Ainda deseja continuar? [S/N]")
                             if resp.upper() == "N":
@@ -308,6 +318,67 @@ def busca_de_contato(agenda):
                                 break
                             elif resp.upper() != "N" and resp.upper() != "S":
                                 os.system('cls')
+
+            case "3":
+
+                os.system('cls')
+
+                sair = False
+                while sair == False:
+                        print ("[BUSCA POR E-MAIL]")
+                        print ("")
+                        print ("[WARN]: Digite parte do E-mail!")
+                        buscaEmail = input("[E-Mail]:")
+                        if buscaEmail == "":
+                            os.system('cls')
+                            print ("[ERROR]: O usúario precisa digitar o e-mail!")
+                            print ("")
+                        else:
+                            contatos = []
+                            telefones = []
+                            emails = []
+                            verificao = False
+                            for i in range(0, len(agenda)):
+                                if buscaEmail.upper() in agenda[i].email.upper():
+                                    verificao = True
+                                    contatos.append(agenda[i].nome)
+                                    telefones.append(agenda[i].telefone)
+                                    emails.append(agenda[i].email)
+                            if verificao == True:
+                                while True:
+                                    print ("")
+                                    print ("[CONTATO(s) ENCONTRADO(s)]: (" + str(len(contatos)) + ")")
+                                    print("[informações do(s) contato(s)]:")
+                                    print ("")
+                                    for i in range(0, len(contatos)):
+                                        print ("[NOME DE CONTATO]:", contatos[i], "[TELEFONE]: (" + telefones[i] + ")")
+                                        print ("[E-MAIL]: (" + emails[i] + ")")
+                                        print ("")
+                                    resp = input("Deseja continuar? [S/N]")
+                                    if resp.upper() == "N":
+                                        os.system('cls')
+                                        sair = True
+                                        break
+                                    elif resp.upper() == "S":
+                                        os.system('cls')
+                                        break
+                                    elif resp.upper() != "N" and resp.upper() != "S": 
+                                        os.system('cls')
+                            else:
+                                while True:
+                                    print ("[ERROR]: Nenhum contato com o email digitado [" + buscaEmail + "] foi encontrado!")
+                                    print("")
+                                    resp = input("Deseja continuar? [S/N]")
+                                    if resp.upper() == "N":
+                                        os.system('cls')
+                                        sair = True
+                                        break
+                                    elif resp.upper() == "S":
+                                        os.system('cls')
+                                        break
+                                    elif resp.upper() != "N" and resp.upper() != "S":
+                                        os.system('cls')
+            
             case _:
                 if op2 != "0":
                     os.system('cls')
@@ -506,7 +577,7 @@ def edicao_contato(cursor, conexao, padrao, agenda):
                                 print ("[CONTATO]:", contato, "[TELEFONE]:", telefone + ".")
                                 print ("[EMAIL]:", email)
                                 print ("")
-                                resp = input("Deseja realmente alterar o nome desse contato? [S/N]")
+                                resp = input("Deseja realmente alterar o telefone desse contato? [S/N]")
                                 if resp.upper() == "N":
                                     os.system('cls')
                                     return
@@ -662,7 +733,17 @@ Exemplos recusados: rogerio@@gmail.com, rogerio@gmail.org""")
                                 elif resp.upper() != "N" and resp.upper() != "S":
                                     os.system('cls')
                     elif resp.upper() != "N" and resp.upper() != "S":
-                        os.system('cls')               
+                        os.system('cls')  
+            
+            case _:
+                
+                if op != "0":
+                    os.system('cls')
+                    print ("[ERROR]: Escolha as opções correspondentes!")
+                    print ("")
+                else:
+                    os.system('cls')
+                    return
 
 op = 999
 while op != "0":
