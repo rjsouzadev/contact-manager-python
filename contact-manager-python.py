@@ -270,7 +270,7 @@ def busca_de_contato(agenda):
                     telefones = []
                     emails = []
                     verificao = False
-                    if len(buscaInicial) == 1:
+                    if len(buscaInicial) == 1 and buscaInicial.isalpha():
                         for i in range(0, len(agenda)):
                             if buscaInicial.upper()[0] == agenda[i].nome.upper()[0]:
                                 verificao = True
@@ -294,9 +294,9 @@ def busca_de_contato(agenda):
                                     break
                                 elif resp.upper() != "N" and resp.upper() != "S": 
                                     os.system('cls')
-                        else:
+                        if verificao == False and buscaInicial.isalpha():
                             while True:
-                                print ("[ERROR]: Nenhum contato com a letra [" + buscaInicial + "] foi encontrada!")
+                                print ("[ERROR]: Nenhum contato foi encontrado!")
                                 print("")
                                 resp = input("Deseja continuar? [S/N]")
                                 if resp.upper() == "N":
@@ -306,9 +306,9 @@ def busca_de_contato(agenda):
                                     break
                                 elif resp.upper() != "N" and resp.upper() != "S":
                                     os.system('cls')
-                    if len(buscaInicial) > 1 and buscaInicial.isalpha():   
+                    else:   
                         while True:
-                            print ("[WARN]: Digite apenas uma letra para achar os contatos correspondentes!")
+                            print ("[WARN]: Operação inválida. Tente novamente.")
                             print ("")
                             resp = input("Ainda deseja continuar? [S/N]")
                             if resp.upper() == "N":

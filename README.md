@@ -53,7 +53,6 @@ Este repositório documenta minha evolução prática com Python, migrando da l�
 ## 🔜 Próximos passos
 
 - Aceitar e-mails com mais de um ponto antes do `@`
-- Mostrar o e-mail também na listagem completa e na remoção
 - Testes automatizados
 - Interface gráfica ou web (avaliação futura)
 
